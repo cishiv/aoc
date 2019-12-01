@@ -3,9 +3,11 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"math"
 	"os"
 	"strconv"
+	"time"
 )
 
 func main() {
@@ -24,6 +26,7 @@ func calcFuel(fuel float64, total float64) float64 {
 }
 
 func partTwo() {
+	defer stopwatch(time.Now(), "part 2")
 	total := 0.0
 	file, err := os.Open("./input-day1")
 	handleErr(err)
@@ -39,6 +42,7 @@ func partTwo() {
 }
 
 func partOne() {
+	defer stopwatch(time.Now(), "part 1")
 	fuel := 0.0
 	file, err := os.Open("./input-day1")
 	handleErr(err)
@@ -56,4 +60,9 @@ func handleErr(err error) {
 	if err != nil {
 		fmt.Println("error")
 	}
+}
+
+func stopwatch(start time.Time, name string) {
+	elapsed := time.Since(start)
+	log.Printf("%s took %s", name, elapsed)
 }
