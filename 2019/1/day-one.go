@@ -19,11 +19,11 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		localTotal := 0.0
-		val, err := strconv.Atoi(scanner.Text())
+		val, err := strconv.ParseFloat(scanner.Text(), 64)
 		if err != nil {
 			fmt.Println("err")
 		}
-		total += calcFuel(float64(val), localTotal)
+		total += calcFuel(val, localTotal)
 	}
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
@@ -50,11 +50,11 @@ func partOne() {
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		val, err := strconv.Atoi(scanner.Text())
+		val, err := strconv.ParseFloat(scanner.Text(), 64)
 		if err != nil {
 			fmt.Println("err")
 		}
-		div := math.Floor(float64(val) / 3.0)
+		div := math.Floor(val / 3.0)
 		fuel += div - 2.0
 	}
 	if err := scanner.Err(); err != nil {
