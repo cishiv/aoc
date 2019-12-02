@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 )
-
+// helper funcs
 func parse(filePath string) {
 	file, err := os.Open(filePath)
 	if err != nil {
