@@ -5,21 +5,29 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 	"strconv"
+	"strings"
+	"time"
 )
 
-var baseMemory []int
-var activeMemory []int
+// ADD The OpCode for the ADD Instruction
+const ADD = "1"
+
+// MUL The OpCode for the MUL Instruction
+const MUL = "2"
+
+// HALT The OpCode for the HALT Instruction
+const HALT = "99"
 
 func main() {
 	// part 1
-	// partOne("./input-day2")
+	partOne("./input-day2")
 	// part 2
 	partTwo("./input-day2")
 }
 
 func partOne(filePath string) {
+	defer stopwatch(time.Now(), "part 1")
 	var codes []string
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -30,11 +38,8 @@ func partOne(filePath string) {
 	for scanner.Scan() {
 		val := scanner.Text()
 		codes = strings.Split(val, ",")
-		fmt.Println(codes)
-		codes[1] = "12"
-		codes[2] = "2"
+		codes = assignInputs("12", "2", codes)
 	}
-	fmt.Println(codes)
 	resultProgram := compute(codes)
 	fmt.Println(resultProgram[0])
 	if err := scanner.Err(); err != nil {
@@ -43,6 +48,7 @@ func partOne(filePath string) {
 }
 
 func partTwo(filePath string) {
+	defer stopwatch(time.Now(), "part 2")
 	var codes []string
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -55,13 +61,10 @@ func partTwo(filePath string) {
 		for i := 1; i <= 99; i++ {
 			for j := 1; j <= 99; j++ {
 				codes = strings.Split(val, ",")
-				codes[1] = strconv.FormatInt(int64(i), 10)
-				codes[2] = strconv.FormatInt(int64(j), 10)
+				codes = assignInputs(strconv.FormatInt(int64(i), 10), strconv.FormatInt(int64(j), 10), codes)
 				resultProgram := compute(codes)
-				if (resultProgram[0] == "19690720") {
-					fmt.Println(100 * i + j)
-					//fmt.Println("FOUND IT")
-					break
+				if resultProgram[0] == "19690720" {
+					fmt.Println(100*i + j)
 				}
 			}
 		}
@@ -70,39 +73,29 @@ func partTwo(filePath string) {
 		log.Fatal(err)
 	}
 }
-func mult(val0 int, val1 int) int {
-	return val0 * val1
-}
-
-func add(val0 int, val1 int) int {
-	return val0 + val1
-}
 
 func compute(instr []string) []string {
 	codes := instr
-	pos := 0 
+	pos := 0
 	execution := true
 	for execution {
-		if (codes[pos] == "99") {
-			//fmt.Println(strconv.FormatInt(int64(pos), 10) + " HALT")
+		if codes[pos] == HALT {
 			execution = false
 			break
 		} else {
-			if (codes[pos] == "1") {
+			if codes[pos] == ADD {
 				val0 := getPosition(pos+1, codes)
 				val1 := getPosition(pos+2, codes)
-				index, err :=  strconv.Atoi(codes[pos+3])
+				index, err := strconv.Atoi(codes[pos+3])
 				handleErr(err)
-				codes[index] = strconv.FormatInt(int64(add(val0,val1)), 10)
-				//fmt.Println("Adding " + strconv.FormatInt(int64(val0), 10) + " and " + strconv.FormatInt(int64(val1), 10) + " equal " + codes[index])
+				codes[index] = strconv.FormatInt(int64(add(val0, val1)), 10)
 			}
-			if (codes[pos] == "2") {
+			if codes[pos] == MUL {
 				val0 := getPosition(pos+1, codes)
 				val1 := getPosition(pos+2, codes)
-				index, err :=  strconv.Atoi(codes[pos+3])
+				index, err := strconv.Atoi(codes[pos+3])
 				handleErr(err)
-				codes[index] = strconv.FormatInt(int64(mult(val0,val1)), 10)
-				//fmt.Println("Multiplying " + strconv.FormatInt(int64(val0), 10) + " and " + strconv.FormatInt(int64(val1), 10) + " equal " + codes[index])
+				codes[index] = strconv.FormatInt(int64(mult(val0, val1)), 10)
 			}
 		}
 		pos = pos + 4
@@ -121,5 +114,25 @@ func getPosition(val int, codes []string) int {
 	handleErr(err)
 	result, err := strconv.Atoi(codes[resultPos])
 	handleErr(err)
-	return  result
+	return result
+}
+
+func assignInputs(val0 string, val1 string, codes []string) []string {
+	result := codes
+	result[1] = val0
+	result[2] = val1
+	return result
+}
+
+func mult(val0 int, val1 int) int {
+	return val0 * val1
+}
+
+func add(val0 int, val1 int) int {
+	return val0 + val1
+}
+
+func stopwatch(start time.Time, name string) {
+	elapsed := time.Since(start)
+	log.Printf("%s took %s", name, elapsed)
 }
