@@ -139,7 +139,7 @@ func vm(data []int, in <-chan int, out chan<- int, halt chan<- bool) {
 			tar := prog[i+3]
 			prog[tar] = val0 * val1
 			i += instruc.parameters + 1
-		// REPLACE instruction
+		// REPLACE instruction (actually the input instr but logically it's a replace at reg param)
 		case 3:
 			tar := prog[i+1]
 			prog[tar] = <-in
