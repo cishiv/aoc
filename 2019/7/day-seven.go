@@ -51,6 +51,7 @@ const (
 
 func main() {
 	data := readFile("./input-day7")
+	val := len(data)
 	// 2019/12/07 09:34:57 part1 took 15.255814ms
 	fmt.Println(run(data, []int{0, 1, 2, 3, 4}, "part1"))
 	// 2019/12/07 09:34:57 part2 took 17.091813ms
