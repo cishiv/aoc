@@ -140,12 +140,6 @@ func handleErr(err error) {
 		fmt.Println("Error")
 	}
 }
-func max(x, y int) int {
-	if x > y {
-		return x
-	}
-	return y
-}
 
 func stopwatch(start time.Time, name string) {
 	elapsed := time.Since(start)
